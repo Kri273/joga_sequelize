@@ -1,17 +1,15 @@
 // get connection to database ORM object
 const Sequelize = require("sequelize");
-const article = require("../models/article");
 const sequelize = new Sequelize('mysql://root:qwerty@localhost:3306/joga_sequelize')
 
-// read model data for table representation
-const Article = require('../models/article')(sequelize, Sequelize.DataTypes);
-const Author = require('../models/author')(sequelize, Sequelize.DataTypes);
 
-Article.hasOne(Author)
+// read model data for table representation
+const models = require('../models')
+
 
 // get all data from table 
 const getAllArticles = (req, res) => {
-    Article.findAll()
+    models.Article.findAll()
     .then(articles => {
         console.log(articles)
         return res.status(200).json({ articles });
@@ -22,10 +20,13 @@ const getAllArticles = (req, res) => {
 }
 
 const getArticleBySlug = (req, res) => {
-    Article.findOne({
+    models.Article.findOne({
     where: {
         slug: req.params.slug
-    }
+    },
+    include: [{
+        model: models.Author
+    }],
 })
 .then(article => {
     console.log(article)
