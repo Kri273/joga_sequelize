@@ -6,6 +6,7 @@ const sequelize = new Sequelize(
 
 // read model data for table representation
 const models = require("../../models");
+const article = require("../../models/article");
 
 // create new article into data table
 const createArticle = (req, res) => {
@@ -54,15 +55,33 @@ const updateArticle = (req, res) => {
     })
     .then((updatedArticle) => {
       console.log(updatedArticle);
-      return res
-        .status(200)
-        .json({ message: "Article updated successfully", updatedArticle });
+      return res.status(200).json({ message: "Article updated" });
     })
     .catch((error) => {
       console.error(error);
       return res
         .status(500)
-        .json({ message: "Failed to update article", error: error.message });
+        .json({ message: "Failed to update", error: error.message });
+    });
+};
+
+const deleteArticle = (req, res) => {
+  models.Article.destroy({
+    where: { id: req.params.id },
+  })
+    .then((deletedCount) => {
+      if (deletedCount === 0) {
+        return res
+          .status(404)
+          .json({ message: "Article not found or already deleted" });
+      }
+
+      return res.status(200).json({ message: "Article deleted successfully" });
+    })
+    .catch((error) => {
+      return res
+        .status(500)
+        .json({ message: "Failed to delete article", error: error.message });
     });
 };
 
@@ -70,4 +89,5 @@ const updateArticle = (req, res) => {
 module.exports = {
   createArticle,
   updateArticle,
+  deleteArticle,
 };

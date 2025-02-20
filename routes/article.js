@@ -9,5 +9,8 @@ router.get('/author/:id', articleController.getArticleByAuthor);
 
 router.post('/admin/article/create', articleAdminController.createArticle);
 router.patch('/admin/article/edit/:id', articleAdminController.updateArticle);
+router.post('/admin/article/delete/:id', articleAdminController.deleteArticle);
+router.post('/admin/article/edit/:id', articleAdminController.updateArticle);
+
 
 module.exports = router;
