@@ -27,10 +27,16 @@ const getArticleBySlug = (req, res) => {
     include: [{
         model: models.Author,
         as: 'author'
-    }],
+    },
+    {
+    model: models.Tag, 
+    through: {
+    model: models.ArticleTag
+    }
+}],
 })
 .then(article => {
-    console.log(article)
+    console.log("Author's Articles:", article);
     return res.status(200).json({ article });
 })
 .catch(error => {
@@ -43,14 +49,13 @@ const getArticleByAuthor = (req, res) => {
     models.Author.findByPk(req.params.id, {
         include: [{
             model: models.Article,
-            as: 'articles',
+            as: 'article',
         }],
     })
     .then(author => {
         if (!author) {
             return res.status(404).json({ error: "Author not found" });
         }
-        console.log(author);
         return res.status(200).json({ 
             author: author.name,
             articles: author.articles
